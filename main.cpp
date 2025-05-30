@@ -3,6 +3,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+struct Product {
+    char ID[10];
+    char Name[50];
+    char unitOfMeasurement[10];
+    char Supplier[50];
+    int Quantity;
+    float Price;
+    Product* next;
+};
 void menu(){
 	//readFile;
 	int number;
@@ -19,7 +28,8 @@ void menu(){
         printf ("[7]. Sap xep hang hoa theo ID.\n");
         printf ("[8]. Hien thi hang hoa.\n" );
 		printf ("[9]. Thong ke hang hoa.\n" );
-        printf ("[0]. Thoat chuong trinh");
+        printf ("[0]. Thoat chuong trinh.\n");
+        printf ("Chon tinh nang: ");
         scanf("%d", &number);
 
         switch (number) {
@@ -52,6 +62,10 @@ void menu(){
 
                 break;
             case 8:
+                system("cls");
+
+                break;
+            case 9:
                 system("cls");
 
                 break;
