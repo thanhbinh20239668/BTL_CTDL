@@ -11,12 +11,26 @@ struct Product {
     float Price;
 };
 
+struct Receipt {
+    char productID[10];
+    char type[10]; // "IMPORT" hoặc "EXPORT"
+    int quantity;
+    char date[15]; 
+};
+
 struct ProductNode {
     Product data;
     ProductNode* next;
 };
 
+struct ReceiptNode{
+    Receipt data;
+    ReceiptNode* next;
+};
+
 ProductNode* productList = NULL;
+ReceiptNode* receiptNode = NULL;
+
 
 // Hàm đọc chuỗi an toàn bằng fgets
 void inputString(char* str, int size) {
@@ -124,8 +138,20 @@ void menu(){
                 break;
             case 8:
                 system("cls");
-                
-                displayProducts();
+                int choice;
+                printf("Chon hien thi:\n");
+                printf("[1].Hien thi hang hoa.\n");
+                printf("[2].Hien thi phieu nhap xuat.\n");
+                printf("Lua chon: ");
+                scanf("%d", &choice);
+                getchar(); 
+                if (choice == 1) {
+                    displayProducts();}
+                else if (choice == 2) {}
+                     
+                else {
+                     printf("Lua chon khong hop le.\n");
+                }
                 break;
             case 9:
                 system("cls");
