@@ -1,5 +1,4 @@
-﻿//Hệ thống quản lý kho hàng: Quản lý các loại hàng hóa, phiếu nhập / xuất kho, thống kê và báo cáo hàng hóa…
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -10,8 +9,68 @@ struct Product {
     char Supplier[50];
     int Quantity;
     float Price;
-    Product* next;
 };
+
+struct ProductNode {
+    Product data;
+    ProductNode* next;
+};
+
+ProductNode* productList = NULL;
+
+// Hàm đọc chuỗi an toàn bằng fgets
+void inputString(char* str, int size) {
+    fgets(str, size, stdin);
+    str[strcspn(str, "\n")] = '\0';  // Xóa newline nếu có
+}
+
+// Hàm tạo sản phẩm mới
+Product createProduct() {
+    Product p;
+    printf("Nhap ID: "); inputString(p.ID, sizeof(p.ID));
+    printf("Nhap ten: "); inputString(p.Name, sizeof(p.Name));
+    printf("Nhap don vi tinh: "); inputString(p.unitOfMeasurement, sizeof(p.unitOfMeasurement));
+    printf("Nhap nha cung cap: "); inputString(p.Supplier, sizeof(p.Supplier));
+    printf("Nhap so luong: "); scanf("%d", &p.Quantity);
+    getchar();
+    printf("Nhap don gia: "); scanf("%f", &p.Price);
+    getchar();
+    return p;
+}
+
+// Thêm sản phẩm vào danh sách (sắp xếp theo ID tăng dần)
+void addProduct() {
+    Product p = createProduct();
+    ProductNode* newNode = (ProductNode*)malloc(sizeof(ProductNode));
+    newNode->data = p;
+    newNode->next = NULL;
+
+    if (productList == NULL || strcmp(p.ID, productList->data.ID) < 0) {
+        newNode->next = productList;
+        productList = newNode;
+        return;
+    }
+
+    ProductNode* current = productList;
+    while (current->next && strcmp(p.ID, current->next->data.ID) > 0) {
+        current = current->next;
+    }
+    newNode->next = current->next;
+    current->next = newNode;
+}
+
+// Hiển thị toàn bộ sản phẩm
+void displayProducts() {
+    ProductNode* current = productList;
+    printf("\n%-10s %-20s %-10s %-20s %-10s %-10s\n",
+           "ID", "Name", "Unit", "Supplier", "Qty", "Price");
+    while (current) {
+        Product p = current->data;
+        printf("%-10s %-20s %-10s %-20s %-10d %-10.2f\n",
+               p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
+        current = current->next;
+    }
+}
 void menu(){
 	//readFile;
 	int number;
@@ -31,11 +90,13 @@ void menu(){
         printf ("[0]. Thoat chuong trinh.\n");
         printf ("Chon tinh nang: ");
         scanf("%d", &number);
+        getchar();
 
         switch (number) {
             case 1:
                 system("cls");
-                
+                addProduct();
+                printf("Da them san pham thanh cong!\n");
                 break;
             case 2:
                 system("cls");
@@ -63,7 +124,7 @@ void menu(){
                 break;
             case 8:
                 system("cls");
-
+                displayProducts();
                 break;
             case 9:
                 system("cls");
@@ -79,7 +140,7 @@ void menu(){
                 printf("Lua chon khong hop le. Vui long chon lai!\n");
                 break;
         }
-    } while (number != '0');
+    } while (number != 0);
 }
 
 int main(){
