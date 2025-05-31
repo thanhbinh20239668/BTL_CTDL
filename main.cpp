@@ -124,6 +124,7 @@ void menu(){
                 break;
             case 8:
                 system("cls");
+                
                 displayProducts();
                 break;
             case 9:
