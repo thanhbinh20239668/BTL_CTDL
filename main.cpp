@@ -10,14 +10,14 @@ struct Product {
     int Quantity;
     float Price;
 };
-
 struct Receipt {
-    char productID[10];
+    char ID[10];
     char type[10]; // "IMPORT" hoặc "EXPORT"
     int quantity;
     char date[15]; 
+    float price;
+    char name[50];
 };
-
 struct ProductNode {
     Product data;
     ProductNode* next;
@@ -45,7 +45,7 @@ Product createProduct() {
     printf("Nhap ten: "); inputString(p.Name, sizeof(p.Name));
     printf("Nhap don vi tinh: "); inputString(p.unitOfMeasurement, sizeof(p.unitOfMeasurement));
     printf("Nhap nha cung cap: "); inputString(p.Supplier, sizeof(p.Supplier));
-    printf("Nhap so luong: "); scanf("%d", &p.Quantity);
+    printf("Nhap so luong dang co: "); scanf("%d", &p.Quantity);
     getchar();
     printf("Nhap don gia: "); scanf("%f", &p.Price);
     getchar();
@@ -85,7 +85,125 @@ void displayProducts() {
         current = current->next;
     }
 }
+// phiếu nhập
+Receipt taoPhieuNhapKho() {
+    Receipt p;
+    strcpy(p.type, "IMPORT");
+    printf("=== Tao Phieu Nhap Kho ===\n");
+    printf("Nhap ma hang (ID): "); inputString(p.ID, sizeof(p.ID));
+    printf("Nhap so luong: "); scanf("%d", &p.quantity);
+    getchar();
 
+    // Lấy tên và giá từ productList nếu có, nếu không thì để trống hoặc 0
+    ProductNode* prod = productList;
+    while (prod) {
+        if (strcmp(prod->data.ID, p.ID) == 0) {
+            strcpy(p.name, prod->data.Name);
+            p.price = prod->data.Price;
+            break;
+        }
+        prod = prod->next;
+    }
+    if (prod == NULL) {
+        strcpy(p.name, "");
+        p.price = 0;
+    }
+
+    printf("Nhap ngay (dd/mm/yyyy): ");
+    inputString(p.date, sizeof(p.date));
+    return p;
+}
+// phiếu xuất
+Receipt taoPhieuXuatKho() {
+    Receipt p;
+    strcpy(p.type, "EXPORT");
+    printf("=== Tao Phieu Xuat Kho ===\n");
+    printf("Nhap ma hang (ID): "); inputString(p.ID, sizeof(p.ID));
+    printf("Nhap so luong: "); scanf("%d", &p.quantity);
+    getchar();
+
+    ProductNode* prod = productList;
+    while (prod) {
+        if (strcmp(prod->data.ID, p.ID) == 0) {
+            strcpy(p.name, prod->data.Name);
+            p.price = prod->data.Price;
+            break;
+        }
+        prod = prod->next;
+    }
+    if (prod == NULL) {
+        strcpy(p.name, "");
+        p.price = 0;
+    }
+
+    printf("Nhap ngay (dd/mm/yyyy): ");
+    inputString(p.date, sizeof(p.date));
+    return p;
+}
+
+void themPhieuVaoDanhSach(Receipt p) {
+    ReceiptNode* newNode = (ReceiptNode*)malloc(sizeof(ReceiptNode));
+    if (newNode == NULL) {
+        printf("Khong du bo nho !\n");
+        return;
+    }
+    newNode->data = p;
+    newNode->next = NULL;
+
+    if (receiptNode == NULL) {
+        receiptNode = newNode;
+    } else {
+        ReceiptNode* current = receiptNode;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
+}
+
+void hienThiPhieu() {
+    int soPhieuNhap = 0;
+    int soPhieuXuat = 0;
+
+    ReceiptNode* current = receiptNode;
+    while (current) {
+        Receipt p = current->data;
+
+        // Đếm số phiếu
+        if (strcmp(p.type, "IMPORT") == 0) {
+            soPhieuNhap++;
+        } else if (strcmp(p.type, "EXPORT") == 0) {
+            soPhieuXuat++;
+        }
+
+        // Cập nhật số lượng sản phẩm trong kho
+        ProductNode* prod = productList;
+        while (prod) {
+            if (strcmp(prod->data.ID, p.ID) == 0) {
+                if (strcmp(p.type, "IMPORT") == 0) {
+                    prod->data.Quantity += p.quantity;
+                } else if (strcmp(p.type, "EXPORT") == 0) {
+                    if (prod->data.Quantity >= p.quantity) {
+                        prod->data.Quantity -= p.quantity;
+                    } else {
+                        printf("Canh bao: Khong du hang de xuat kho (ID: %s, So luong yeu cau: %d, Ton kho: %d)\n",
+                               p.ID, p.quantity, prod->data.Quantity);
+                        // Không trừ nếu không đủ hàng
+                    }
+                }
+                break;
+            }
+            prod = prod->next;
+        }
+
+        current = current->next;
+    }
+
+    // In thống kê
+    printf("\n===== Thong ke phieu =====\n");
+    printf("So phieu nhap: %d\n", soPhieuNhap);
+    printf("So phieu xuat: %d\n", soPhieuXuat);
+}
 
 void menu(){
 	//readFile;
@@ -95,14 +213,13 @@ void menu(){
         printf("=============QUAN LI KHO HANG==============\n");
         printf("-------------------------------------------\n");
         printf ("[1]. Them hang hoa.\n");
-        printf ("[2]. Nhap kho.\n");
-        printf ("[3]. Xuat kho.\n");
-        printf ("[4]. Sua thong tin hang hoa.\n") ;
-        printf ("[5]. Tim kiem hang hoa.\n");
-		printf ("[6]. Xoa hang hoa.\n");
-        printf ("[7]. Sap xep hang hoa theo ID.\n");
-        printf ("[8]. Hien thi hang hoa.\n" );
-		printf ("[9]. Thong ke hang hoa.\n" );
+        printf("[2]. Them phieu nhap/xuat.\n");
+        printf ("[3]. Sua thong tin hang hoa.\n") ;
+        printf ("[4]. Tim kiem hang hoa.\n");
+		printf ("[5]. Xoa hang hoa.\n");
+        printf ("[6]. Sap xep hang hoa theo ID.\n");
+        printf ("[7]. Hien thi hang hoa/phieu.\n" );
+		printf ("[8]. Thong ke hang hoa.\n" );
         printf ("[0]. Thoat chuong trinh.\n");
         printf ("Chon tinh nang: ");
         scanf("%d", &number);
@@ -115,9 +232,22 @@ void menu(){
                 printf("Da them san pham thanh cong!\n");
                 break;
             case 2:
-                system("cls");
-                
-                break;
+                int loaiPhieu;
+                printf("Chon loai phieu:\n[1] Phieu nhap kho\n[2] Phieu xuat kho\nLua chon: ");
+                scanf("%d", &loaiPhieu);
+                getchar();
+                Receipt p;
+                if (loaiPhieu == 1) {
+                    p = taoPhieuNhapKho();
+                } else if (loaiPhieu == 2) {
+                    p = taoPhieuXuatKho();
+                } else {
+                    printf("Lua chon khong hop le.\n");
+                    break;
+                }
+                	themPhieuVaoDanhSach(p);
+                printf("Da them phieu thanh cong.\n");
+                break;   
             case 3:
                 system("cls");
                 
@@ -136,24 +266,26 @@ void menu(){
                 break;
             case 7:
                 system("cls");
-
-                break;
-            case 8:
-                system("cls");
                 int choice;
                 printf("Chon hien thi:\n");
                 printf("[1].Hien thi hang hoa.\n");
-                printf("[2].Hien thi phieu nhap xuat.\n");
+                printf("[2].thong ke phieu nhap xuat.\n");
                 printf("Lua chon: ");
                 scanf("%d", &choice);
                 getchar(); 
                 if (choice == 1) {
                     displayProducts();}
-                else if (choice == 2) {}
+                else if (choice == 2) {
+                	hienThiPhieu();
+				}
                      
                 else {
                      printf("Lua chon khong hop le.\n");
                 }
+                break;
+            case 8:
+                system("cls");
+               
                 break;
             case 9:
                 system("cls");
