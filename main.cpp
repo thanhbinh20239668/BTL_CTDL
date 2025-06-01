@@ -73,7 +73,32 @@ void addProduct() {
     newNode->next = current->next;
     current->next = newNode;
 }
+// Hàm xóa sản phẩm 
+void deleteProduct(){
+    char id[10];
+    printf("Nhap ID san pham muon xoa: ");
+    inputString(id, sizeof(id));
 
+    ProductNode* current = productList;
+    ProductNode* prev = NULL;
+
+    while (current) {
+        if (strcmp(current->data.ID, id) == 0) {
+            if (prev == NULL) {
+                productList = current->next;
+            }
+            else {
+                prev->next = current->next;
+            }
+            free(current);
+            printf("Da xoa san pham co ID: %s\n", id);
+            return;
+        }
+        prev = current;
+        current = current->next;
+    }
+    printf("Khong tim thay san pham co ID: %s\n", id);
+}
 // Hiển thị toàn bộ sản phẩm
 void displayProducts() {
     ProductNode* current = productList;
@@ -260,7 +285,7 @@ void menu(){
                 break;
             case 5:
                 system("cls");
-
+				deleteProduct();
                 break;
             case 6:
                 system("cls");
