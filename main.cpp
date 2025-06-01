@@ -12,7 +12,7 @@ struct Product {
 };
 struct Receipt {
     char ID[10];
-    char type[10]; // "IMPORT" hoặc "EXPORT"
+    char type[10]; //"IMPORT" hoặc "EXPORT"
     int quantity;
     char date[15];
     float price;
