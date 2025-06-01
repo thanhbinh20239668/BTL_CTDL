@@ -228,7 +228,7 @@ void menu(){
         printf("=============QUAN LI KHO HANG==============\n");
         printf("-------------------------------------------\n");
         printf ("[1]. Them hang hoa.\n");
-        printf("[2]. Them phieu nhap/xuat.\n");
+        printf ("[2]. Them phieu nhap/xuat.\n");
         printf ("[3]. Sua thong tin hang hoa.\n") ;
         printf ("[4]. Tim kiem hang hoa.\n");
 		printf ("[5]. Xoa hang hoa.\n");
@@ -247,6 +247,7 @@ void menu(){
                 printf("Da them san pham thanh cong!\n");
                 break;
             case 2:
+                system("cls");
                 int loaiPhieu;
                 printf("Chon loai phieu:\n[1] Phieu nhap kho\n[2] Phieu xuat kho\nLua chon: ");
                 scanf("%d", &loaiPhieu);
