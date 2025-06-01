@@ -17,7 +17,7 @@ struct Receipt {
     char date[15];
     float price;
     char name[50];
-    int isProcessed; // ✅ Đánh dấu đã cập nhật vào kho chưa
+    int isProcessed; //  Đánh dấu đã cập nhật vào kho chưa
 };
 struct ProductNode {
     Product data;
@@ -90,12 +90,11 @@ void displayProducts() {
 Receipt taoPhieuNhapKho() {
     Receipt p;
     strcpy(p.type, "IMPORT");
-     p.isProcessed = 0; // ✅ đánh dấu chưa xử lý
+     p.isProcessed = 0; //  đánh dấu chưa xử lý
     printf("=== Tao Phieu Nhap Kho ===\n");
     printf("Nhap ma hang (ID): "); inputString(p.ID, sizeof(p.ID));
     printf("Nhap so luong: "); scanf("%d", &p.quantity);
     getchar();
-
     ProductNode* prod = productList;
     while (prod) {
         if (strcmp(prod->data.ID, p.ID) == 0) {
@@ -118,12 +117,11 @@ Receipt taoPhieuNhapKho() {
 Receipt taoPhieuXuatKho() {
     Receipt p;
     strcpy(p.type, "EXPORT");
-     p.isProcessed = 0; // ✅ đánh dấu chưa xử lý
+     p.isProcessed = 0; //  đánh dấu chưa xử lý
     printf("=== Tao Phieu Xuat Kho ===\n");
     printf("Nhap ma hang (ID): "); inputString(p.ID, sizeof(p.ID));
     printf("Nhap so luong: "); scanf("%d", &p.quantity);
     getchar();
-
     ProductNode* prod = productList;
     while (prod) {
         if (strcmp(prod->data.ID, p.ID) == 0) {
@@ -144,7 +142,6 @@ Receipt taoPhieuXuatKho() {
 }
 void xuLiPhieu(Receipt* p) {
     if (p->isProcessed == 1) return; // tránh xử lý lại phiếu đã xử lý
-
     ProductNode* prod = productList;
     while (prod) {
         if (strcmp(prod->data.ID, p->ID) == 0) {
@@ -163,7 +160,6 @@ void xuLiPhieu(Receipt* p) {
         }
         prod = prod->next;
     }
-
     p->isProcessed = 1; // đánh dấu đã xử lý
 }
 void themPhieuVaoDanhSach(Receipt p) {
@@ -188,19 +184,16 @@ void themPhieuVaoDanhSach(Receipt p) {
 void hienThiPhieu() {
     int soPhieuNhap = 0;
     int soPhieuXuat = 0;
-
     ReceiptNode* current = receiptNode;
     while (current) {
         Receipt* p = &current->data;
-
         // Đếm số phiếu
         if (strcmp(p->type, "IMPORT") == 0) {
             soPhieuNhap++;
         } else if (strcmp(p->type, "EXPORT") == 0) {
             soPhieuXuat++;
         }
-
-        // ✅ Cập nhật số lượng nếu chưa xử lý
+        //  Cập nhật số lượng nếu chưa xử lý
         if (p->isProcessed == 0) {
             ProductNode* prod = productList;
             while (prod) {
@@ -221,10 +214,8 @@ void hienThiPhieu() {
             }
             p->isProcessed = 1; // ✅ đánh dấu đã xử lý
         }
-
         current = current->next;
     }
-
     printf("\n===== Thong ke phieu =====\n");
     printf("So phieu nhap: %d\n", soPhieuNhap);
     printf("So phieu xuat: %d\n", soPhieuXuat);
