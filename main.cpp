@@ -162,7 +162,7 @@ void xuLiPhieu(Receipt* p) {
     }
     p->isProcessed = 1; // đánh dấu đã xử lý
 }
-void themPhieuVaoDanhSach(Receipt p) {
+void themPhieuVaoDanhSach(Receipt p) {  // dùng đếm số phiếu đã thực hiện
     ReceiptNode* newNode = (ReceiptNode*)malloc(sizeof(ReceiptNode));
     if (newNode == NULL) {
         printf("Khong du bo nho !\n");
@@ -193,7 +193,7 @@ void hienThiPhieu() {
         } else if (strcmp(p->type, "EXPORT") == 0) {
             soPhieuXuat++;
         }
-        //  Cập nhật số lượng nếu chưa xử lý
+        // Cập nhật số lượng nếu chưa xử lý
         if (p->isProcessed == 0) {
             ProductNode* prod = productList;
             while (prod) {
