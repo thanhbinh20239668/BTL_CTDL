@@ -186,7 +186,7 @@ void hienThiPhieu() {
                     if (prod->data.Quantity >= p.quantity) {
                         prod->data.Quantity -= p.quantity;
                     } else {
-                        printf("Canh bao: Khong du hang de xuat kho (ID: %s, So luong yeu cau: %d, Ton kho: %d)\n",
+                        printf(" Khong du hang de xuat kho (ID: %s, So luong yeu cau: %d, Ton kho: %d)\n",
                                p.ID, p.quantity, prod->data.Quantity);
                         // Không trừ nếu không đủ hàng
                     }
