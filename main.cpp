@@ -193,27 +193,6 @@ void hienThiPhieu() {
         } else if (strcmp(p->type, "EXPORT") == 0) {
             soPhieuXuat++;
         }
-        // Cập nhật số lượng nếu chưa xử lý
-        if (p->isProcessed == 0) {
-            ProductNode* prod = productList;
-            while (prod) {
-                if (strcmp(prod->data.ID, p->ID) == 0) {
-                    if (strcmp(p->type, "IMPORT") == 0) {
-                        prod->data.Quantity += p->quantity;
-                    } else if (strcmp(p->type, "EXPORT") == 0) {
-                        if (prod->data.Quantity >= p->quantity) {
-                            prod->data.Quantity -= p->quantity;
-                        } else {
-                            printf("⚠️  Khong du hang de xuat kho (ID: %s, Yeu cau: %d, Ton: %d)\n",
-                                   p->ID, p->quantity, prod->data.Quantity);
-                        }
-                    }
-                    break;
-                }
-                prod = prod->next;
-            }
-            p->isProcessed = 1; // ✅ đánh dấu đã xử lý
-        }
         current = current->next;
     }
     printf("\n===== Thong ke phieu =====\n");
