@@ -85,6 +85,8 @@ void displayProducts() {
         current = current->next;
     }
 }
+
+
 void menu(){
 	//readFile;
 	int number;
