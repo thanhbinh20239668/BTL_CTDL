@@ -14,9 +14,10 @@ struct Receipt {
     char ID[10];
     char type[10]; // "IMPORT" hoặc "EXPORT"
     int quantity;
-    char date[15]; 
+    char date[15];
     float price;
     char name[50];
+    int isProcessed; // ✅ Đánh dấu đã cập nhật vào kho chưa
 };
 struct ProductNode {
     Product data;
@@ -89,12 +90,12 @@ void displayProducts() {
 Receipt taoPhieuNhapKho() {
     Receipt p;
     strcpy(p.type, "IMPORT");
+     p.isProcessed = 0; // ✅ đánh dấu chưa xử lý
     printf("=== Tao Phieu Nhap Kho ===\n");
     printf("Nhap ma hang (ID): "); inputString(p.ID, sizeof(p.ID));
     printf("Nhap so luong: "); scanf("%d", &p.quantity);
     getchar();
 
-    // Lấy tên và giá từ productList nếu có, nếu không thì để trống hoặc 0
     ProductNode* prod = productList;
     while (prod) {
         if (strcmp(prod->data.ID, p.ID) == 0) {
@@ -108,15 +109,16 @@ Receipt taoPhieuNhapKho() {
         strcpy(p.name, "");
         p.price = 0;
     }
-
     printf("Nhap ngay (dd/mm/yyyy): ");
     inputString(p.date, sizeof(p.date));
     return p;
 }
+
 // phiếu xuất
 Receipt taoPhieuXuatKho() {
     Receipt p;
     strcpy(p.type, "EXPORT");
+     p.isProcessed = 0; // ✅ đánh dấu chưa xử lý
     printf("=== Tao Phieu Xuat Kho ===\n");
     printf("Nhap ma hang (ID): "); inputString(p.ID, sizeof(p.ID));
     printf("Nhap so luong: "); scanf("%d", &p.quantity);
@@ -140,14 +142,37 @@ Receipt taoPhieuXuatKho() {
     inputString(p.date, sizeof(p.date));
     return p;
 }
+void xuLiPhieu(Receipt* p) {
+    if (p->isProcessed == 1) return; // tránh xử lý lại phiếu đã xử lý
 
+    ProductNode* prod = productList;
+    while (prod) {
+        if (strcmp(prod->data.ID, p->ID) == 0) {
+            if (strcmp(p->type, "IMPORT") == 0) {
+                prod->data.Quantity += p->quantity;
+            } else if (strcmp(p->type, "EXPORT") == 0) {
+                if (prod->data.Quantity >= p->quantity) {
+                    prod->data.Quantity -= p->quantity;
+                } else {
+                    printf("Canh bao: Khong du hang de xuat kho (ID: %s, Yeu cau: %d, Ton kho: %d)\n",
+                           p->ID, p->quantity, prod->data.Quantity);
+                    return;
+                }
+            }
+            break;
+        }
+        prod = prod->next;
+    }
+
+    p->isProcessed = 1; // đánh dấu đã xử lý
+}
 void themPhieuVaoDanhSach(Receipt p) {
     ReceiptNode* newNode = (ReceiptNode*)malloc(sizeof(ReceiptNode));
     if (newNode == NULL) {
         printf("Khong du bo nho !\n");
         return;
     }
-    newNode->data = p;
+    newNode->data = p; // p đã được đánh dấu isProcessed=1 rồi
     newNode->next = NULL;
 
     if (receiptNode == NULL) {
@@ -160,51 +185,50 @@ void themPhieuVaoDanhSach(Receipt p) {
         current->next = newNode;
     }
 }
-
 void hienThiPhieu() {
     int soPhieuNhap = 0;
     int soPhieuXuat = 0;
 
     ReceiptNode* current = receiptNode;
     while (current) {
-        Receipt p = current->data;
+        Receipt* p = &current->data;
 
         // Đếm số phiếu
-        if (strcmp(p.type, "IMPORT") == 0) {
+        if (strcmp(p->type, "IMPORT") == 0) {
             soPhieuNhap++;
-        } else if (strcmp(p.type, "EXPORT") == 0) {
+        } else if (strcmp(p->type, "EXPORT") == 0) {
             soPhieuXuat++;
         }
 
-        // Cập nhật số lượng sản phẩm trong kho
-        ProductNode* prod = productList;
-        while (prod) {
-            if (strcmp(prod->data.ID, p.ID) == 0) {
-                if (strcmp(p.type, "IMPORT") == 0) {
-                    prod->data.Quantity += p.quantity;
-                } else if (strcmp(p.type, "EXPORT") == 0) {
-                    if (prod->data.Quantity >= p.quantity) {
-                        prod->data.Quantity -= p.quantity;
-                    } else {
-                        printf(" Khong du hang de xuat kho (ID: %s, So luong yeu cau: %d, Ton kho: %d)\n",
-                               p.ID, p.quantity, prod->data.Quantity);
-                        // Không trừ nếu không đủ hàng
+        // ✅ Cập nhật số lượng nếu chưa xử lý
+        if (p->isProcessed == 0) {
+            ProductNode* prod = productList;
+            while (prod) {
+                if (strcmp(prod->data.ID, p->ID) == 0) {
+                    if (strcmp(p->type, "IMPORT") == 0) {
+                        prod->data.Quantity += p->quantity;
+                    } else if (strcmp(p->type, "EXPORT") == 0) {
+                        if (prod->data.Quantity >= p->quantity) {
+                            prod->data.Quantity -= p->quantity;
+                        } else {
+                            printf("⚠️  Khong du hang de xuat kho (ID: %s, Yeu cau: %d, Ton: %d)\n",
+                                   p->ID, p->quantity, prod->data.Quantity);
+                        }
                     }
+                    break;
                 }
-                break;
+                prod = prod->next;
             }
-            prod = prod->next;
+            p->isProcessed = 1; // ✅ đánh dấu đã xử lý
         }
 
         current = current->next;
     }
 
-    // In thống kê
     printf("\n===== Thong ke phieu =====\n");
     printf("So phieu nhap: %d\n", soPhieuNhap);
     printf("So phieu xuat: %d\n", soPhieuXuat);
 }
-
 void menu(){
 	//readFile;
 	int number;
@@ -213,7 +237,7 @@ void menu(){
         printf("=============QUAN LI KHO HANG==============\n");
         printf("-------------------------------------------\n");
         printf ("[1]. Them hang hoa.\n");
-        printf ("[2]. Them phieu nhap/xuat.\n");
+        printf("[2]. Them phieu nhap/xuat.\n");
         printf ("[3]. Sua thong tin hang hoa.\n") ;
         printf ("[4]. Tim kiem hang hoa.\n");
 		printf ("[5]. Xoa hang hoa.\n");
@@ -232,22 +256,28 @@ void menu(){
                 printf("Da them san pham thanh cong!\n");
                 break;
             case 2:
-                system("cls");
                 int loaiPhieu;
                 printf("Chon loai phieu:\n[1] Phieu nhap kho\n[2] Phieu xuat kho\nLua chon: ");
                 scanf("%d", &loaiPhieu);
                 getchar();
+
                 Receipt p;
                 if (loaiPhieu == 1) {
-                    p = taoPhieuNhapKho();
-                } else if (loaiPhieu == 2) {
-                    p = taoPhieuXuatKho();
-                } else {
-                    printf("Lua chon khong hop le.\n");
-                    break;
-                }
-                	themPhieuVaoDanhSach(p);
-                printf("Da them phieu thanh cong.\n");
+                p = taoPhieuNhapKho();
+                xuLiPhieu(&p);
+               } else if (loaiPhieu == 2) {
+                  p = taoPhieuXuatKho();
+                   xuLiPhieu(&p);
+               } else {
+                printf("Lua chon khong hop le.\n");
+                break;
+      }
+
+           // Thêm phiếu vào danh sách
+           themPhieuVaoDanhSach(p);
+
+            printf("Da them va xu ly phieu thanh cong.\n");
+            break;
                 break;   
             case 3:
                 system("cls");
