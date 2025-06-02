@@ -150,65 +150,41 @@ void deleteProduct(){
     printf("Khong tim thay san pham co ID: %s\n", id);
 }
 //Hàm tìm sản phẩm
-void searchProduct(){
-    int choice;
-    printf("Tim kiem theo:\n[1] Ma hang (ID)\n[2] Ten san pham\nLua chon: ");
-    scanf("%d", &choice);
-    getchar();
+void searchProduct() {
+    char keyword[50];
+    printf("Nhap ID hoac ten san pham de tim kiem: ");
+    inputString(keyword, sizeof(keyword));
 
-    if (choice == 1) {
-        char id[10];
-        printf("Nhap ID: ");
-        inputString(id, sizeof(id));
+    int found = 0;
+    ProductNode* current = productList;
 
-        ProductNode* current = productList;
-        while (current) {
-            if (strcmp(current->data.ID, id) == 0) {
-                Product p = current->data;
-                printf("\n%-10s %-20s %-10s %-20s %-10s %-10s\n",
-                       "ID", "Name", "Unit", "Supplier", "Qty", "Price");
-                printf("%-10s %-20s %-10s %-20s %-10d %-10.2f\n",
-                       p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
-                return;
-            }
-            current = current->next;
-        }
-        printf("Khong tim thay san pham co ID: %s\n", id);
-    } else if (choice == 2) {
-        char name[50];
-        printf("Nhap ten san pham: ");
-        inputString(name, sizeof(name));
-
-        ProductNode* current = productList;
-        int found = 0;
-        printf("\n%-10s %-20s %-10s %-20s %-10s %-10s\n",
-               "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
-
-        while (current) {
-            if (strstr(current->data.Name, name) != NULL) {
-                Product p = current->data;
-                printf("%-10s %-20s %-10s %-20s %-10d %-10.2f\n",
-                       p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
+    while (current) {
+        Product p = current->data;
+        if (strcmp(p.ID, keyword) == 0 || strstr(p.Name, keyword) != NULL) {
+            if (!found) {
+                printf("\n%-10s %-25s %-15s %-25s %-10s %-12s\n",
+                       "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
                 found = 1;
             }
-            current = current->next;
+            printf("%-10s %-25s %-15s %-25s %-10d %-12.2f\n",
+                   p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
         }
-        if (!found) {
-            printf("Khong tim thay san pham co ten chua: \"%s\"\n", name);
-        }
-    } else {
-        printf("Lua chon khong hop le!\n");
+        current = current->next;
+    }
+
+    if (!found) {
+        printf("Khong tim thay san pham voi tu khoa: \"%s\"\n", keyword);
     }
 }
 // Hiển thị toàn bộ sản phẩm
 void displayProducts() {
     ProductNode* current = productList;
-    printf("\n%-10s %-20s %-10s %-20s %-10s %-10s\n",
+    printf("\n%-10s %-25s %-15s %-25s %-10s %-12s\n",
            "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
     while (current) {
         Product p = current->data;
-        printf("%-10s %-20s %-10s %-20s %-10d %-10.2f\n",
-               p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
+        printf("%-10s %-25s %-15s %-25s %-10d %-12.2f\n",
+                   p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
         current = current->next;
     }
 }
