@@ -74,7 +74,7 @@ void addProduct() {
     current->next = newNode;
 }
 //Hàm sửa thông tin sản phẩm
-void editProduct() {
+void editProduct(){
     char id[10];
     printf("Nhap ID san pham can sua: ");
     inputString(id, sizeof(id));
@@ -326,7 +326,7 @@ void menu(){
                 break;   
             case 3:
                 system("cls");
-                
+                editProduct();
                 break;
             case 4:
                 system("cls");
