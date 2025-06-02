@@ -236,9 +236,8 @@ void menu(){
         printf ("[3]. Sua thong tin hang hoa.\n") ;
         printf ("[4]. Tim kiem hang hoa.\n");
 		printf ("[5]. Xoa hang hoa.\n");
-        printf ("[6]. Sap xep hang hoa theo ID.\n");
-        printf ("[7]. Hien thi hang hoa/phieu.\n" );
-		printf ("[8]. Thong ke hang hoa.\n" );
+        printf ("[6]. Hien thi hang hoa/phieu.\n" );
+		printf ("[7]. Thong ke hang hoa.\n" );
         printf ("[0]. Thoat chuong trinh.\n");
         printf ("Chon tinh nang: ");
         scanf("%d", &number);
@@ -289,10 +288,6 @@ void menu(){
                 break;
             case 6:
                 system("cls");
-
-                break;
-            case 7:
-                system("cls");
                 int choice;
                 printf("Chon hien thi:\n");
                 printf("[1].Hien thi hang hoa.\n");
@@ -310,14 +305,11 @@ void menu(){
                      printf("Lua chon khong hop le.\n");
                 }
                 break;
-            case 8:
+            case 7:
                 system("cls");
                
                 break;
-            case 9:
-                system("cls");
 
-                break;
             case 0:
                 printf("Thoat chuong trinh.\n") ;
                 //saveFile();
