@@ -73,6 +73,56 @@ void addProduct() {
     newNode->next = current->next;
     current->next = newNode;
 }
+//Hàm sửa thông tin sản phẩm
+void editProduct() {
+    char id[10];
+    printf("Nhap ID san pham can sua: ");
+    inputString(id, sizeof(id));
+
+    ProductNode* current = productList;
+    while (current) {
+        if (strcmp(current->data.ID, id) == 0) {
+            int choice;
+            printf("Da tim thay san pham: %s\n", current->data.Name);
+            printf("Chon thong tin muon sua:\n");
+            printf("[1] Ten\n[2] Don vi tinh\n[3] Nha cung cap\n[4] So luong\n[5] Don gia\n");
+            printf("Lua chon: ");
+            scanf("%d", &choice);
+            getchar();
+            switch (choice) {
+            case 1:
+                printf("Nhap ten moi: ");
+                inputString(current->data.Name, sizeof(current->data.Name));
+                break;
+            case 2:
+                printf("Nhap don vi tinh moi: ");
+                inputString(current->data.unitOfMeasurement, sizeof(current->data.unitOfMeasurement));
+                break;
+            case 3:
+                printf("Nhap nha cung cap moi: ");
+                inputString(current->data.Supplier, sizeof(current->data.Supplier));
+                break;
+            case 4:
+                printf("Nhap so luong moi: ");
+                scanf("%d", &current->data.Quantity);
+                getchar();
+                break;
+            case 5:
+                printf("Nhap don gia moi: ");
+                scanf("%f", &current->data.Price);
+                getchar();
+                break;
+            default:
+                printf("Lua chon khong hop le!\n");
+                return;
+            }
+            printf("Da cap nhat thong tin san pham!\n");
+            return;
+        }
+        current = current->next;
+    }
+    printf("Khong tim thay san pham co ID: %s\n", id);
+}
 // Hàm xóa sản phẩm 
 void deleteProduct(){
     char id[10];
