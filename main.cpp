@@ -173,7 +173,7 @@ void searchProduct(){
             }
             current = current->next;
         }
-        printf("❌ Khong tim thay san pham co ID: %s\n", id);
+        printf("Khong tim thay san pham co ID: %s\n", id);
     } else if (choice == 2) {
         char name[50];
         printf("Nhap ten san pham: ");
@@ -194,7 +194,7 @@ void searchProduct(){
             current = current->next;
         }
         if (!found) {
-            printf("❌ Khong tim thay san pham co ten chua: \"%s\"\n", name);
+            printf("Khong tim thay san pham co ten chua: \"%s\"\n", name);
         }
     } else {
         printf("Lua chon khong hop le!\n");
@@ -204,7 +204,7 @@ void searchProduct(){
 void displayProducts() {
     ProductNode* current = productList;
     printf("\n%-10s %-20s %-10s %-20s %-10s %-10s\n",
-           "ID", "Name", "Unit", "Supplier", "Qty", "Price");
+           "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
     while (current) {
         Product p = current->data;
         printf("%-10s %-20s %-10s %-20s %-10d %-10.2f\n",
