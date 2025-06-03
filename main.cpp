@@ -301,6 +301,31 @@ void hienThiPhieu() {
     printf("So phieu nhap: %d\n", soPhieuNhap);
     printf("So phieu xuat: %d\n", soPhieuXuat);
 }
+//thong ke hang hoa
+void thongKeHangHoa() {
+    if (productList == NULL) {
+        printf("Danh sach san pham rong.\n");
+        return;
+    }
+
+    int tongLoai = 0;
+    int tongSoLuong = 0;
+    float tongGiaTri = 0;
+
+    ProductNode* current = productList;
+    while (current != NULL) {
+        tongLoai++;
+        tongSoLuong += current->data.Quantity;
+        tongGiaTri += current->data.Quantity * current->data.Price;
+        current = current->next;
+    }
+
+    printf("\n===== THONG KE HANG HOA =====\n");
+    printf("Tong so loai mat hang: %d\n", tongLoai);
+    printf("Tong so luong hang: %d\n", tongSoLuong);
+    printf("Tong gia tri hang ton kho: %.2f\n", tongGiaTri);
+}
+
 void menu(){
 	//readFile;
 	int number;
@@ -384,7 +409,7 @@ void menu(){
                 break;
             case 7:
                 system("cls");
-               
+                thongKeHangHoa();
                 break;
 
             case 0:
