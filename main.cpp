@@ -343,12 +343,12 @@ void menu(){
                } else {
                 printf("Lua chon khong hop le.\n");
                 break;
-      }
+               }
 
-           // Thêm phiếu vào danh sách
-           themPhieuVaoDanhSach(p);
+                // Thêm phiếu vào danh sách
+                themPhieuVaoDanhSach(p);
 
-            printf("Da them va xu ly phieu thanh cong.\n");
+                printf("Da them va xu ly phieu thanh cong.\n");
             break;
                 break;   
             case 3:
