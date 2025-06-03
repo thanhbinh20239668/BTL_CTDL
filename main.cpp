@@ -179,12 +179,13 @@ void searchProduct() {
 // Hiển thị toàn bộ sản phẩm
 void displayProducts() {
     ProductNode* current = productList;
-    printf("\n%-10s %-25s %-15s %-25s %-10s %-12s\n",
-           "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
+    printf("\n%-10s %-20s %-10s %-20s %-10s %-12s %-12s\n",
+           "ID", "Ten sp", "Don vi", "Nha cung cap", "So luong", "Gia", "Tong");
     while (current) {
         Product p = current->data;
-        printf("%-10s %-25s %-15s %-25s %-10d %-12.2f\n",
-                   p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
+        float total = p.Quantity * p.Price;
+        printf("%-10s %-20s %-10s %-20s %-10d %-12.2f %-12.2f\n",
+               p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price, total);
         current = current->next;
     }
 }
