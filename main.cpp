@@ -304,7 +304,8 @@ void themPhieuVaoDanhSach(Receipt p) {  // dùng đếm số phiếu đã thực
         current->next = newNode;
     }
 }
-void hienThiPhieu() {
+//Thong ke so phieu
+void statisticsReceipt() {
     int soPhieuNhap = 0;
     int soPhieuXuat = 0;
     ReceiptNode* current = receiptList;
@@ -416,18 +417,14 @@ void menu(){
                 int choice;
                 printf("Chon hien thi:\n");
                 printf("[1].Hien thi hang hoa.\n");
-                printf("[2].thong ke phieu nhap xuat.\n");
-                printf("[3].Hien thi chi tiet cac phieu.\n");
+                printf("[2].Hien thi chi tiet cac phieu.\n");
                 printf("Lua chon: ");
                 scanf("%d", &choice);
                 getchar(); 
                 if (choice == 1) {
                     displayProducts();}
                 else if (choice == 2) {
-                	hienThiPhieu();
-				}
-                else if (choice == 3) {
-                     displayReceipt(); 
+                    displayReceipt(); 
                 }
                 else {
                      printf("Lua chon khong hop le.\n");
@@ -435,7 +432,21 @@ void menu(){
                 break;
             case 7:
                 system("cls");
-                statisticsProduct();
+                int choices;
+                printf("Chon thong ke:\n");
+                printf("[1].Thong ke hang hoa.\n");
+                printf("[2].Thong ke so phieu.\n");
+                printf("Lua chon: ");
+                scanf("%d", &choices);
+                getchar(); 
+                if (choices == 1) {
+                    statisticsProduct();}
+                else if (choices == 2) {
+                    statisticsReceipt(); 
+                }
+                else {
+                     printf("Lua chon khong hop le.\n");
+                }
                 break;
 
             case 0:
