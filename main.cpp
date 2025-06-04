@@ -30,7 +30,7 @@ struct ReceiptNode{
 };
 
 ProductNode* productList = NULL;
-ReceiptNode* receiptNode = NULL;
+ReceiptNode* receiptList = NULL;
 
 
 // Hàm đọc chuỗi an toàn bằng fgets
@@ -191,7 +191,7 @@ void displayProducts() {
 }
 
 void displayReceipt() {
-    if (receiptNode == NULL) {
+    if (receiptList == NULL) {
         printf("Khong co phieu nao trong danh sach.\n");
         return;
     }
@@ -200,7 +200,7 @@ void displayReceipt() {
     printf("%-10s %-25s %-10s %-15s %-12s %-12s\n",
            "Ma SP", "Ten SP", "So luong", "Ngay", "Don gia", "Thanh tien");
 
-    ReceiptNode* current = receiptNode;
+    ReceiptNode* current = receiptList;
     while (current != NULL) {
         Receipt r = current->data;
         float thanhTien = r.quantity * r.price;
@@ -294,10 +294,10 @@ void themPhieuVaoDanhSach(Receipt p) {  // dùng đếm số phiếu đã thực
     newNode->data = p; // p đã được đánh dấu isProcessed=1 rồi
     newNode->next = NULL;
 
-    if (receiptNode == NULL) {
-        receiptNode = newNode;
+    if (receiptList == NULL) {
+        receiptList = newNode;
     } else {
-        ReceiptNode* current = receiptNode;
+        ReceiptNode* current = receiptList;
         while (current->next != NULL) {
             current = current->next;
         }
@@ -307,7 +307,7 @@ void themPhieuVaoDanhSach(Receipt p) {  // dùng đếm số phiếu đã thực
 void hienThiPhieu() {
     int soPhieuNhap = 0;
     int soPhieuXuat = 0;
-    ReceiptNode* current = receiptNode;
+    ReceiptNode* current = receiptList;
     while (current) {
         Receipt* p = &current->data;
         // Đếm số phiếu
@@ -377,7 +377,7 @@ void menu(){
                 int loaiPhieu;
                 printf("Chon loai phieu:\n");
                 printf("[1] Phieu nhap kho\n");
-                printf("[2] Phieu xuat kho\nLua chon: ");
+                printf("[2] Phieu xuat kho\n ");
                 printf("Lua chon:");
                 scanf("%d", &loaiPhieu);
                 getchar();
@@ -417,7 +417,7 @@ void menu(){
                 printf("Chon hien thi:\n");
                 printf("[1].Hien thi hang hoa.\n");
                 printf("[2].thong ke phieu nhap xuat.\n");
-                printf("[3]. Hien thi chi tiet cac phieu.\n");
+                printf("[3].Hien thi chi tiet cac phieu.\n");
                 printf("Lua chon: ");
                 scanf("%d", &choice);
                 getchar(); 
