@@ -385,11 +385,72 @@ void statisticsProduct() {
             break;
         }
     } while (choice != 0);
+}
+//doc du lieu tu File
+void readFile(const char* tenFile) {
+    FILE* f = fopen(tenFile, "r");
+    if (f == NULL) {
+        printf("Khong the mo file %s de doc du lieu.\n", tenFile);
+        return;
+    }
 
+    char line[256];
+    while (fgets(line, sizeof(line), f)) {
+        Product p;
+        if (sscanf(line, "%[^,],%[^,],%[^,],%[^,],%d,%f",
+                   p.ID,
+                   p.Name,
+                   p.unitOfMeasurement,
+                   p.Supplier,
+                   &p.Quantity,
+                   &p.Price) == 6) {
+
+            ProductNode* newNode = (ProductNode*)malloc(sizeof(ProductNode));
+            newNode->data = p;
+            newNode->next = NULL;
+
+            if (productList == NULL) {
+                productList = newNode;
+            } else {
+                ProductNode* temp = productList;
+                while (temp->next != NULL)
+                    temp = temp->next;
+                temp->next = newNode;
+            }
+        }
+    }
+
+    fclose(f);
+    printf("Da doc du lieu hang hoa tu file '%s'.\n", tenFile);
+}
+//ghi du lieu ra file
+void saveFile(const char* tenFile) {
+    FILE* f = fopen(tenFile, "w");
+    if (f == NULL) {
+        printf("Khong the mo file %s de ghi du lieu.\n", tenFile);
+        return;
+    }
+
+    ProductNode* current = productList;
+    while (current != NULL) {
+        fprintf(f, "%s,%s,%s,%s,%d,%.2f\n",
+                current->data.ID,
+                current->data.Name,
+                current->data.unitOfMeasurement,
+                current->data.Supplier,
+                current->data.Quantity,
+                current->data.Price);
+        current = current->next;
+    }
+
+    fclose(f);
+    printf("Da luu du lieu hang hoa vao file '%s'.\n", tenFile);
 }
 
 void menu(){
 	//readFile;
+    productList = NULL;
+    readFile("baocao.txt");
 	int number;
 	do {
         printf( "\n-------------------------------------------\n" ) ;
@@ -489,8 +550,9 @@ void menu(){
                 break;
 
             case 0:
-                printf("Thoat chuong trinh.\n") ;
                 //saveFile();
+                saveFile("baocao.txt");
+                printf("Thoat chuong trinh.\n") ;
                 printf("Cam on ban da su dung chuong trinh!\n");
                 break;
             default:
