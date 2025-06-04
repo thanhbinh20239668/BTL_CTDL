@@ -168,29 +168,114 @@ void deleteProduct(){
 }
 //Hàm tìm sản phẩm
 void searchProduct() {
-    char keyword[50];
-    printf("Nhap ID hoac ten san pham de tim kiem: ");
-    inputString(keyword, sizeof(keyword));
+    int choice;
+    printf("[1] Theo ID hoac ten\n");
+    printf("[2] Theo nha cung cap\n");
+    printf("[3] Theo khoang gia\n");
+    printf("[4] Theo khoang so luong\n");
+    printf("Lua chon: ");
+    scanf("%d", &choice);
+    getchar();
 
-    int found = 0;
     ProductNode* current = productList;
+    int found = 0;
 
-    while (current) {
-        Product p = current->data;
-        if (strcmp(p.ID, keyword) == 0 || strstr(p.Name, keyword) != NULL) {
-            if (!found) {
-                printf("\n%-10s %-25s %-15s %-25s %-10s %-12s\n",
-                       "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
-                found = 1;
+    switch (choice) {
+    case 1: {
+        char keyword[50];
+        printf("Nhap ID hoac ten san pham: ");
+        inputString(keyword, sizeof(keyword));
+        while (current) {
+            Product p = current->data;
+            if (strcmp(p.ID, keyword) == 0 || strstr(p.Name, keyword) != NULL) {
+                if (!found) {
+                    printf("\n%-10s %-25s %-15s %-25s %-10s %-12s\n",
+                           "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
+                    found = 1;
+                }
+                printf("%-10s %-25s %-15s %-25s %-10d %-12.2f\n",
+                       p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
             }
-            printf("%-10s %-25s %-15s %-25s %-10d %-12.2f\n",
-                   p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
+            current = current->next;
         }
-        current = current->next;
+        break;
+    }
+
+    case 2: {
+        char supplier[50];
+        printf("Nhap ten nha cung cap: ");
+        inputString(supplier, sizeof(supplier));
+        while (current) {
+            Product p = current->data;
+            if (strstr(p.Supplier, supplier)) {
+                if (!found) {
+                    printf("\n%-10s %-25s %-15s %-25s %-10s %-12s\n",
+                           "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
+                    found = 1;
+                }
+                printf("%-10s %-25s %-15s %-25s %-10d %-12.2f\n",
+                       p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
+            }
+            current = current->next;
+        }
+        break;
+    }
+
+    case 3: {
+        float minPrice, maxPrice;
+        printf("Nhap gia thap nhat: ");
+        scanf("%f", &minPrice);
+        printf("Nhap gia cao nhat: ");
+        scanf("%f", &maxPrice);
+        getchar();
+
+        while (current) {
+            Product p = current->data;
+            if (p.Price >= minPrice && p.Price <= maxPrice) {
+                if (!found) {
+                    printf("\n%-10s %-25s %-15s %-25s %-10s %-12s\n",
+                           "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
+                    found = 1;
+                }
+                printf("%-10s %-25s %-15s %-25s %-10d %-12.2f\n",
+                       p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
+            }
+            current = current->next;
+        }
+        break;
+    }
+
+    case 4: {
+        int minQty, maxQty;
+        printf("Nhap so luong thap nhat: ");
+        scanf("%d", &minQty);
+        printf("Nhap so luong cao nhat: ");
+        scanf("%d", &maxQty);
+        getchar();
+
+        while (current) {
+            Product p = current->data;
+            if (p.Quantity >= minQty && p.Quantity <= maxQty) {
+                if (!found) {
+                    printf("\n%-10s %-25s %-15s %-25s %-10s %-12s\n",
+                           "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
+                    found = 1;
+                }
+                printf("%-10s %-25s %-15s %-25s %-10d %-12.2f\n",
+                       p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
+            }
+            current = current->next;
+        }
+        break;
+    }
+
+    default:
+        printf("Lua chon khong hop le.\n");
+        return;
     }
 
     if (!found) {
-        printf("Khong tim thay san pham voi tu khoa: \"%s\"\n", keyword);
+        printf("Khong tim thay san pham.\n");
     }
 }
 // Hiển thị toàn bộ sản phẩm
