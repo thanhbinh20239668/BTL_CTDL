@@ -323,7 +323,7 @@ void hienThiPhieu() {
     printf("So phieu xuat: %d\n", soPhieuXuat);
 }
 //thong ke hang hoa
-void thongKeHangHoa() {
+void statisticsProduct() {
     if (productList == NULL) {
         printf("Danh sach san pham rong.\n");
         return;
@@ -435,7 +435,7 @@ void menu(){
                 break;
             case 7:
                 system("cls");
-                thongKeHangHoa();
+                statisticsProduct();
                 break;
 
             case 0:
