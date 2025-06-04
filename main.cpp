@@ -341,6 +341,7 @@ void statisticsReceipt() {
 }
 //thong ke hang hoa
 void statisticsProduct() {
+    int choice;
     if (productList == NULL) {
         printf("Danh sach san pham rong.\n");
         return;
@@ -358,10 +359,33 @@ void statisticsProduct() {
         current = current->next;
     }
 
-    printf("\n===== THONG KE HANG HOA =====\n");
-    printf("Tong so loai mat hang: %d\n", tongLoai);
-    printf("Tong so luong hang: %d\n", tongSoLuong);
-    printf("Tong gia tri hang ton kho: %.2f\n", tongGiaTri);
+    do{
+        printf("\n===== THONG KE HANG HOA =====\n");
+        printf("[1].Tong so loai mat hang: %d\n", tongLoai);
+        printf("[2].Tong so luong hang: %d\n", tongSoLuong);
+        printf("[3].Tong gia tri hang ton kho: %.2f\n", tongGiaTri);
+        printf("[0].Thoat .\n");
+        printf("Lua chon: ");
+        scanf("%d", &choice);
+        getchar();
+        switch (choice){
+        case 1:
+            printf("Tong so loai mat hang: %d\n", tongLoai);
+            break;
+        case 2:
+            printf("Tong so luong hang: %d\n", tongSoLuong);
+            break;
+        case 3:
+            printf("Tong gia tri hang ton kho: %.2f\n", tongGiaTri);
+            break;
+        case 0:
+            printf("Thoat thanh cong.\n");    
+        default:
+            printf("Lua chon khong hop le. Vui long chon lai!\n");
+            break;
+        }
+    } while (choice != 0);
+
 }
 
 void menu(){
