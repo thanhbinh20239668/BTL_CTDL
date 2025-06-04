@@ -60,6 +60,17 @@ void addProduct() {
     newNode->data = p;
     newNode->next = NULL;
 
+    // Kiểm tra trùng ID
+    ProductNode* temp = productList;
+    while (temp != NULL) {
+        if (strcmp(temp->data.ID, p.ID) == 0) {
+            printf("Loi: Da ton tai san pham voi ID '%s'. Khong the them.\n", p.ID);
+            return;
+        }
+        temp = temp->next;
+    }
+
+
     if (productList == NULL || strcmp(p.ID, productList->data.ID) < 0) {
         newNode->next = productList;
         productList = newNode;
@@ -72,6 +83,7 @@ void addProduct() {
     }
     newNode->next = current->next;
     current->next = newNode;
+    printf("Da them san pham thanh cong!\n");
 }
 //Hàm sửa thông tin sản phẩm
 void editProduct(){
@@ -371,7 +383,6 @@ void menu(){
             case 1:
                 system("cls");
                 addProduct();
-                printf("Da them san pham thanh cong!\n");
                 break;
             case 2:
                 system("cls");
