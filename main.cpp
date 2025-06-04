@@ -392,7 +392,7 @@ void statisticsProduct() {
                 printf("\n--- Thong ke theo nha cung cap ---\n");
                 ProductNode* outer = productList;
                 while (outer != NULL) {
-                    // Ki?m tra nhà cung c?p dã in ra chua
+                    // Kiem tra nha cung cap da in ra chua
                     int daThongKe = 0;
                     ProductNode* tempCheck = productList;
                     while (tempCheck != outer) {
@@ -458,8 +458,6 @@ void statisticsProduct() {
                 break;
         }
     } while (choice != 0);
-<<<<<<< HEAD
-=======
 }
 //doc du lieu tu File
 void readFile(const char* tenFile) {
@@ -520,7 +518,6 @@ void saveFile(const char* tenFile) {
 
     fclose(f);
     printf("Da luu du lieu hang hoa vao file '%s'.\n", tenFile);
->>>>>>> bb85621998a1e90c3560087cb9dd2d612f39196b
 }
 
 void menu(){
