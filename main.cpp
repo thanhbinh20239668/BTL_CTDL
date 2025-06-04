@@ -171,7 +171,7 @@ void searchProduct() {
     int choice;
     printf("[1] Theo ID hoac ten\n");
     printf("[2] Theo nha cung cap\n");
-    printf("[3] Theo khoang gia\n");
+    printf("[3] Theo khoang don gia\n");
     printf("[4] Theo khoang so luong\n");
     printf("Lua chon: ");
     scanf("%d", &choice);
@@ -223,9 +223,9 @@ void searchProduct() {
 
     case 3: {
         float minPrice, maxPrice;
-        printf("Nhap gia thap nhat: ");
+        printf("Nhap don gia thap nhat: ");
         scanf("%f", &minPrice);
-        printf("Nhap gia cao nhat: ");
+        printf("Nhap don gia cao nhat: ");
         scanf("%f", &maxPrice);
         getchar();
 
