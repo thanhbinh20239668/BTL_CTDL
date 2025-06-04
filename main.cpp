@@ -97,7 +97,11 @@ void editProduct(){
             int choice;
             printf("Da tim thay san pham: %s\n", current->data.Name);
             printf("Chon thong tin muon sua:\n");
-            printf("[1] Ten\n[2] Don vi tinh\n[3] Nha cung cap\n[4] So luong\n[5] Don gia\n");
+            printf("[1] Ten\n");
+            printf("[2] Don vi tinh\n");
+            printf("[3] Nha cung cap\n");
+            printf("[4] So luong\n");
+            printf("[5] Don gia\n");
             printf("Lua chon: ");
             scanf("%d", &choice);
             getchar();
