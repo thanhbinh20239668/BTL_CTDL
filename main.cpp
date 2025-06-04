@@ -189,6 +189,26 @@ void displayProducts() {
         current = current->next;
     }
 }
+
+void displayReceipt() {
+    if (receiptNode == NULL) {
+        printf("Khong co phieu nao trong danh sach.\n");
+        return;
+    }
+
+    printf("\n================ CHI TIET CAC PHIEU =================\n");
+    printf("%-10s %-25s %-10s %-15s %-12s %-12s\n",
+           "Ma SP", "Ten SP", "So luong", "Ngay", "Don gia", "Thanh tien");
+
+    ReceiptNode* current = receiptNode;
+    while (current != NULL) {
+        Receipt r = current->data;
+        float thanhTien = r.quantity * r.price;
+        printf("%-10s %-25s %-10d %-15s %-12.2f %-12.2f\n",
+               r.ID, r.name, r.quantity, r.date, r.price, thanhTien);
+        current = current->next;
+    }
+}
 // phiếu nhập
 Receipt taoPhieuNhapKho() {
     Receipt p;
@@ -355,18 +375,21 @@ void menu(){
             case 2:
                 system("cls");
                 int loaiPhieu;
-                printf("Chon loai phieu:\n[1] Phieu nhap kho\n[2] Phieu xuat kho\nLua chon: ");
+                printf("Chon loai phieu:\n");
+                printf("[1] Phieu nhap kho\n");
+                printf("[2] Phieu xuat kho\nLua chon: ");
+                printf("Lua chon:");
                 scanf("%d", &loaiPhieu);
                 getchar();
 
                 Receipt p;
                 if (loaiPhieu == 1) {
                 p = taoPhieuNhapKho();
-                xuLiPhieu(&p);
-               } else if (loaiPhieu == 2) {
+                    xuLiPhieu(&p);
+                } else if (loaiPhieu == 2) {
                   p = taoPhieuXuatKho();
-                   xuLiPhieu(&p);
-               } else {
+                    xuLiPhieu(&p);
+                } else {
                 printf("Lua chon khong hop le.\n");
                 break;
                }
@@ -375,7 +398,6 @@ void menu(){
                 themPhieuVaoDanhSach(p);
 
                 printf("Da them va xu ly phieu thanh cong.\n");
-            break;
                 break;   
             case 3:
                 system("cls");
@@ -395,6 +417,7 @@ void menu(){
                 printf("Chon hien thi:\n");
                 printf("[1].Hien thi hang hoa.\n");
                 printf("[2].thong ke phieu nhap xuat.\n");
+                printf("[3]. Hien thi chi tiet cac phieu.\n");
                 printf("Lua chon: ");
                 scanf("%d", &choice);
                 getchar(); 
@@ -403,7 +426,9 @@ void menu(){
                 else if (choice == 2) {
                 	hienThiPhieu();
 				}
-                     
+                else if (choice == 3) {
+                     displayReceipt(); 
+                }
                 else {
                      printf("Lua chon khong hop le.\n");
                 }
