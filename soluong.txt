@@ -1,0 +1,5 @@
+DANH SACH SAN PHAM SAP XEP THEO SO LUONG GIAM DAN:
+ID         Ten                  Don vi          Nha cung cap         So luong   Don gia   
+002        tay                  chiec           Hust                 100        20000.00  
+003        vo                   quyen           NEU                  60         20000.00  
+001        but                  chiec           Hust                 40         10000.00  
