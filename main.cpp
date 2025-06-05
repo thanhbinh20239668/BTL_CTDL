@@ -462,36 +462,6 @@ void statisticsProduct() {
 
     do{
         printf("\n===== THONG KE HANG HOA =====\n");
-<<<<<<< HEAD
-        printf("[1].Tong so loai mat hang: %d\n", tongLoai);
-        printf("[2].Tong so luong hang: %d\n", tongSoLuong);
-        printf("[3].Tong gia tri hang ton kho: %.2f\n", tongGiaTri);
-        printf("[0].Thoat .\n");
-        printf("Lua chon: ");
-        scanf("%d", &choice);
-        getchar();
-        switch (choice){
-        case 1:
-            printf("Tong so loai mat hang: %d\n", tongLoai);
-            break;
-        case 2:
-            printf("Tong so luong hang: %d\n", tongSoLuong);
-            break;
-        case 3:
-            printf("Tong gia tri hang ton kho: %.2f\n", tongGiaTri);
-            break;
-        case 0:
-            printf("Thoat thanh cong.\n");    
-        default:
-            printf("Lua chon khong hop le. Vui long chon lai!\n");
-            break;
-        }
-    } while (choice != 0);
-}
-
-void menu(){
-	//readFile;
-=======
         printf("[1]. Tong so loai mat hang\n");
         printf("[2]. Tong so luong hang\n");
         printf("[3]. Tong gia tri hang ton kho\n");
@@ -779,7 +749,6 @@ void saveFile(const char* tenFile) {
 void menu(){
     productList = NULL;
     readFile("baocao.txt");
->>>>>>> d05d8f7d35178d47aa93fc3a9b85efcdc4dac819
 	int number;
 	do {
         printf( "\n-------------------------------------------\n" ) ;
@@ -878,10 +847,7 @@ void menu(){
                 break;
 
             case 0:
-<<<<<<< HEAD
-=======
                 saveFile("baocao.txt");
->>>>>>> d05d8f7d35178d47aa93fc3a9b85efcdc4dac819
                 printf("Thoat chuong trinh.\n") ;
                 //saveFile();
                 printf("Cam on ban da su dung chuong trinh!\n");
