@@ -40,10 +40,29 @@ void inputString(char* str, int size) {
     str[strcspn(str, "\n")] = '\0';  // Xóa newline nếu có
 }
 
+// Hàm tạo ID sản phẩm tự động dạng SP001, SP002,...
+char* createProductID(ProductNode* head) {
+    int maxID = 0;
+    while (head != NULL) {
+        int num = 0;
+        sscanf(head->data.ID, "SP%d", &num);
+        if (num > maxID) maxID = num;
+        head = head->next;
+    }
+
+    char* newID = (char*)malloc(10);
+    sprintf(newID, "SP%03d", maxID + 1);
+    return newID;
+}
+
 // Hàm tạo sản phẩm mới
 Product createProduct() {
     Product p;
-    printf("Nhap ID: "); inputString(p.ID, sizeof(p.ID));
+    char* idMoi = createProductID(productList);
+    strcpy(p.ID, idMoi);
+    free(idMoi);
+
+    printf("ID tu dong tao: %s\n", p.ID);
     printf("Nhap ten: "); inputString(p.Name, sizeof(p.Name));
     printf("Nhap don vi tinh: "); inputString(p.unitOfMeasurement, sizeof(p.unitOfMeasurement));
     printf("Nhap nha cung cap: "); inputString(p.Supplier, sizeof(p.Supplier));
@@ -61,31 +80,20 @@ void addProduct() {
     newNode->data = p;
     newNode->next = NULL;
 
-    // Kiểm tra trùng ID
-    ProductNode* temp = productList;
-    while (temp != NULL) {
-        if (strcmp(temp->data.ID, p.ID) == 0) {
-            printf("Loi: Da ton tai san pham voi ID '%s'. Khong the them.\n", p.ID);
-            return;
+    if (productList == NULL) {
+        productList = newNode;  // Nếu danh sách rỗng, gán luôn
+    } else {
+        ProductNode* current = productList;
+        while (current->next != NULL) {
+            current = current->next;  // Duyệt đến cuối danh sách
         }
-        temp = temp->next;
+        current->next = newNode;  // Thêm vào cuối
     }
 
-
-    if (productList == NULL || strcmp(p.ID, productList->data.ID) < 0) {
-        newNode->next = productList;
-        productList = newNode;
-        return;
-    }
-
-    ProductNode* current = productList;
-    while (current->next && strcmp(p.ID, current->next->data.ID) > 0) {
-        current = current->next;
-    }
-    newNode->next = current->next;
-    current->next = newNode;
     printf("Da them san pham thanh cong!\n");
 }
+
+
 //Hàm sửa thông tin sản phẩm
 void editProduct(){
     char id[10];
@@ -168,40 +176,125 @@ void deleteProduct(){
 }
 //Hàm tìm sản phẩm
 void searchProduct() {
-    char keyword[50];
-    printf("Nhap ID hoac ten san pham de tim kiem: ");
-    inputString(keyword, sizeof(keyword));
+    int choice;
+    printf("[1] Theo ID hoac ten\n");
+    printf("[2] Theo nha cung cap\n");
+    printf("[3] Theo khoang don gia\n");
+    printf("[4] Theo khoang so luong\n");
+    printf("Lua chon: ");
+    scanf("%d", &choice);
+    getchar();
 
-    int found = 0;
     ProductNode* current = productList;
+    int found = 0;
 
-    while (current) {
-        Product p = current->data;
-        if (strcmp(p.ID, keyword) == 0 || strstr(p.Name, keyword) != NULL) {
-            if (!found) {
-                printf("\n%-10s %-25s %-15s %-25s %-10s %-12s\n",
-                       "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
-                found = 1;
+    switch (choice) {
+    case 1: {
+        char keyword[50];
+        printf("Nhap ID hoac ten san pham: ");
+        inputString(keyword, sizeof(keyword));
+        while (current) {
+            Product p = current->data;
+            if (strcmp(p.ID, keyword) == 0 || strstr(p.Name, keyword) != NULL) {
+                if (!found) {
+                    printf("\n%-10s %-25s %-15s %-25s %-10s %-12s\n",
+                           "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
+                    found = 1;
+                }
+                printf("%-10s %-25s %-15s %-25s %-10d %-12.2f\n",
+                       p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
             }
-            printf("%-10s %-25s %-15s %-25s %-10d %-12.2f\n",
-                   p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
+            current = current->next;
         }
-        current = current->next;
+        break;
+    }
+
+    case 2: {
+        char supplier[50];
+        printf("Nhap ten nha cung cap: ");
+        inputString(supplier, sizeof(supplier));
+        while (current) {
+            Product p = current->data;
+            if (strstr(p.Supplier, supplier)) {
+                if (!found) {
+                    printf("\n%-10s %-25s %-15s %-25s %-10s %-12s\n",
+                           "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
+                    found = 1;
+                }
+                printf("%-10s %-25s %-15s %-25s %-10d %-12.2f\n",
+                       p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
+            }
+            current = current->next;
+        }
+        break;
+    }
+
+    case 3: {
+        float minPrice, maxPrice;
+        printf("Nhap don gia thap nhat: ");
+        scanf("%f", &minPrice);
+        printf("Nhap don gia cao nhat: ");
+        scanf("%f", &maxPrice);
+        getchar();
+
+        while (current) {
+            Product p = current->data;
+            if (p.Price >= minPrice && p.Price <= maxPrice) {
+                if (!found) {
+                    printf("\n%-10s %-25s %-15s %-25s %-10s %-12s\n",
+                           "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
+                    found = 1;
+                }
+                printf("%-10s %-25s %-15s %-25s %-10d %-12.2f\n",
+                       p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
+            }
+            current = current->next;
+        }
+        break;
+    }
+
+    case 4: {
+        int minQty, maxQty;
+        printf("Nhap so luong thap nhat: ");
+        scanf("%d", &minQty);
+        printf("Nhap so luong cao nhat: ");
+        scanf("%d", &maxQty);
+        getchar();
+
+        while (current) {
+            Product p = current->data;
+            if (p.Quantity >= minQty && p.Quantity <= maxQty) {
+                if (!found) {
+                    printf("\n%-10s %-25s %-15s %-25s %-10s %-12s\n",
+                           "ID", "Ten", "Don vi tinh", "Nha cung cap", "So luong", "Don gia");
+                    found = 1;
+                }
+                printf("%-10s %-25s %-15s %-25s %-10d %-12.2f\n",
+                       p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price);
+            }
+            current = current->next;
+        }
+        break;
+    }
+
+    default:
+        printf("Lua chon khong hop le.\n");
+        return;
     }
 
     if (!found) {
-        printf("Khong tim thay san pham voi tu khoa: \"%s\"\n", keyword);
+        printf("Khong tim thay san pham.\n");
     }
 }
 // Hiển thị toàn bộ sản phẩm
 void displayProducts() {
     ProductNode* current = productList;
-    printf("\n%-10s %-20s %-10s %-20s %-10s %-12s %-12s\n",
+    printf("\n%-10s | %-20s | %-10s | %-20s | %-10s | %-12s | %-12s\n",
            "ID", "Ten sp", "Don vi", "Nha cung cap", "So luong", "Gia", "Tong");
     while (current) {
         Product p = current->data;
         float total = p.Quantity * p.Price;
-        printf("%-10s %-20s %-10s %-20s %-10d %-12.2f %-12.2f\n",
+        printf("%-10s | %-20s | %-10s | %-20s | %-10d | %-12.2f | %-12.2f\n",
                p.ID, p.Name, p.unitOfMeasurement, p.Supplier, p.Quantity, p.Price, total);
         current = current->next;
     }
@@ -312,7 +405,7 @@ void displayReceipt() {
     }
 
     printf("\n================ CHI TIET CAC PHIEU =================\n");
-    printf("%-10s %-25s %-12s %-10s %-15s %-12s %-12s %-15s\n",
+    printf("%-10s | %-25s | %-12s | %-10s | %-15s | %-12s | %-12s | %-15s\n",
            "Ma SP", "Ten SP", "Loai phieu", "So luong", "Ngay", "Don gia", "Thanh tien", "Trang thai");
 
     ReceiptNode* current = receiptList;
@@ -322,7 +415,7 @@ void displayReceipt() {
         const char* loaiPhieu = strcmp(r.type, "IMPORT") == 0 ? "NHAP" : "XUAT";
         const char* trangThai = (r.isSuccess == 1) ? "THANH CONG" : "KHONG THANH CONG";
         
-        printf("%-10s %-25s %-12s %-10d %-15s %-12.2f %-12.2f %-15s\n",
+        printf("%-10s | %-25s | %-12s | %-10d | %-15s | %-12.2f | %-12.2f | %-15s\n",
                r.ID, r.name, loaiPhieu, r.quantity, r.date, r.price, thanhTien, trangThai);
         current = current->next;
     }
@@ -346,6 +439,7 @@ void statisticsReceipt() {
     printf("So phieu nhap: %d\n", soPhieuNhap);
     printf("So phieu xuat: %d\n", soPhieuXuat);
 }
+
 //thong ke hang hoa
 void statisticsProduct() {
     int choice;
@@ -368,6 +462,7 @@ void statisticsProduct() {
 
     do{
         printf("\n===== THONG KE HANG HOA =====\n");
+<<<<<<< HEAD
         printf("[1].Tong so loai mat hang: %d\n", tongLoai);
         printf("[2].Tong so luong hang: %d\n", tongSoLuong);
         printf("[3].Tong gia tri hang ton kho: %.2f\n", tongGiaTri);
@@ -396,6 +491,295 @@ void statisticsProduct() {
 
 void menu(){
 	//readFile;
+=======
+        printf("[1]. Tong so loai mat hang\n");
+        printf("[2]. Tong so luong hang\n");
+        printf("[3]. Tong gia tri hang ton kho\n");
+        printf("[4]. Thong ke theo nha cung cap\n");
+        printf("[5]. Thong ke theo gia tri ton kho giam dan\n");
+        printf("[6]. San pham sap het hang (SL < 10)\n");
+        printf("[7]. Gia tri trung binh cua 1 mat hang\n");
+        printf("[8]. Thong ke theo so luong giam dan\n");
+        printf("[0]. Thoat\n");
+        printf("Lua chon: ");
+        scanf("%d", &choice);
+        getchar();
+
+        switch (choice) {
+            case 1:
+                printf("Tong so loai mat hang: %d\n", tongLoai);
+                break;
+            case 2:
+                printf("Tong so luong hang: %d\n", tongSoLuong);
+                break;
+            case 3:
+                printf("Tong gia tri hang ton kho: %.2f\n", tongGiaTri);
+                break;
+            case 4: {
+                printf("\n--- Thong ke theo nha cung cap ---\n");
+                ProductNode* outer = productList;
+                while (outer != NULL) {
+                    int daThongKe = 0;
+                    ProductNode* check = productList;
+                    while (check != outer) {
+                        if (strcmp(check->data.Supplier, outer->data.Supplier) == 0) {
+                            daThongKe = 1;
+                            break;
+                        }
+                        check = check->next;
+                    }
+                    if (!daThongKe) {
+                        int sl = 0;
+                        float gt = 0;
+                        ProductNode* inner = productList;
+                        while (inner != NULL) {
+                            if (strcmp(inner->data.Supplier, outer->data.Supplier) == 0) {
+                                sl += inner->data.Quantity;
+                                gt += inner->data.Quantity * inner->data.Price;
+                            }
+                            inner = inner->next;
+                        }
+                        printf("NCC: %s | SL: %d | Gia tri: %.2f\n", outer->data.Supplier, sl, gt);
+                    }
+                    outer = outer->next;
+                }
+                break;
+            }
+            case 5: {
+    printf("\n--- Sap xep san pham theo gia tri ton kho Giam Dan ---\n");
+
+    //Dem so phan tu
+    int count = 0;
+    ProductNode* temp = productList;
+    while (temp != NULL) {
+        count++;
+        temp = temp->next;
+    }
+
+    if (count == 0) {
+        printf("Khong co san pham de thong ke.\n");
+        break;
+    }
+
+    // Copy danh sach vao mang de sap xep
+    Product* arr = (Product*)malloc(count * sizeof(Product));
+    temp = productList;
+    for (int i = 0; i < count; i++) {
+        arr[i] = temp->data;
+        temp = temp->next;
+    }
+
+    //Sap xep giam dan theo gia tri ton kho
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = i + 1; j < count; j++) {
+            float val1 = arr[i].Quantity * arr[i].Price;
+            float val2 = arr[j].Quantity * arr[j].Price;
+            if (val1 < val2) {
+                Product tmp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = tmp;
+            }
+        }
+    }
+
+    //ghi ket qua ra file thongke.txt
+    FILE* f = fopen("thongke.txt", "w");
+    if (f == NULL) {
+        printf("Khong the mo file thongke.txt de ghi.\n");
+        free(arr);
+        break;
+    }
+
+    fprintf(f, "DANH SACH SAN PHAM SAP XEP THEO GIA TRI TON KHO GIAM DAN:\n");
+    fprintf(f, "%-10s %-20s %-15s %-20s %-10s %-10s %-15s\n",
+            "ID", "Ten", "Don vi", "Nha cung cap", "So luong", "Don gia", "Gia tri ton kho");
+
+    for (int i = 0; i < count; i++) {
+        float giaTri = arr[i].Quantity * arr[i].Price;
+        fprintf(f, "%-10s %-20s %-15s %-20s %-10d %-10.2f %-15.2f\n",
+                arr[i].ID, arr[i].Name, arr[i].unitOfMeasurement, arr[i].Supplier,
+                arr[i].Quantity, arr[i].Price, giaTri);
+    }
+
+    fclose(f);
+    printf("Da ghi ket qua thong ke vao file 'thongke.txt'.\n");
+
+    //in ra man hinh
+    for (int i = 0; i < count; i++) {
+        printf("%-10s | %-20s | SL: %-3d | Don gia: %.2f | Gia tri: %.2f\n",
+               arr[i].ID, arr[i].Name, arr[i].Quantity, arr[i].Price,
+               arr[i].Quantity * arr[i].Price);
+    }
+
+    free(arr);
+    break;
+}
+            case 6: {
+                printf("\n--- San pham sap het hang (SL < 10) ---\n");
+                ProductNode* ptr = productList;
+                int found = 0;
+                while (ptr != NULL) {
+                    if (ptr->data.Quantity < 10) {
+                        printf("ID: %s | Ten: %s | SL: %d\n",
+                               ptr->data.ID, ptr->data.Name, ptr->data.Quantity);
+                        found = 1;
+                    }
+                    ptr = ptr->next;
+                }
+                if (!found)
+                    printf("Khong co san pham nao sap het hang.\n");
+                break;
+            }
+            case 7: {
+                if (tongLoai == 0) {
+                    printf("Khong co mat hang nao de tinh trung binh.\n");
+                } else {
+                    float avg = tongGiaTri / tongLoai;
+                    printf("Gia tri trung binh cua 1 mat hang: %.2f\n", avg);
+                }
+                break;
+            }
+            case 8: {
+    printf("\n--- Sap xep san pham theo so luong Giam Dan ---\n");
+
+    //dem so san pham
+    int count = 0;
+    ProductNode* temp = productList;
+    while (temp != NULL) {
+        count++;
+        temp = temp->next;
+    }
+
+    if (count == 0) {
+        printf("Khong co san pham de thong ke.\n");
+        break;
+    }
+
+    //sao chep du lieu sang mang de sap xep
+    Product* arr = (Product*)malloc(count * sizeof(Product));
+    temp = productList;
+    for (int i = 0; i < count; i++) {
+        arr[i] = temp->data;
+        temp = temp->next;
+    }
+
+    //sap xep giam dan theo so luong
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = i + 1; j < count; j++) {
+            if (arr[i].Quantity < arr[j].Quantity) {
+                Product tmp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = tmp;
+            }
+        }
+    }
+
+    //ghi vao file soluong.txt
+    FILE* f = fopen("soluong.txt", "w");
+    if (f == NULL) {
+        printf("Khong the mo file soluong.txt de ghi.\n");
+        free(arr);
+        break;
+    }
+
+    fprintf(f, "DANH SACH SAN PHAM SAP XEP THEO SO LUONG GIAM DAN:\n");
+    fprintf(f, "%-10s %-20s %-15s %-20s %-10s %-10s\n",
+            "ID", "Ten", "Don vi", "Nha cung cap", "So luong", "Don gia");
+
+    for (int i = 0; i < count; i++) {
+        fprintf(f, "%-10s %-20s %-15s %-20s %-10d %-10.2f\n",
+                arr[i].ID, arr[i].Name, arr[i].unitOfMeasurement, arr[i].Supplier,
+                arr[i].Quantity, arr[i].Price);
+    }
+
+    fclose(f);
+    printf("Da ghi ket qua vao file 'soluong.txt'.\n");
+
+    //in ra man hinh
+    for (int i = 0; i < count; i++) {
+        printf("%-10s | %-20s | So luong: %-4d | Don gia: %.2f\n",
+               arr[i].ID, arr[i].Name, arr[i].Quantity, arr[i].Price);
+    }
+
+    free(arr);
+    break;
+}
+            case 0:
+                printf("Thoat thong ke.\n");
+                break;
+            default:
+                printf("Lua chon khong hop le. Vui long chon lai!\n");
+                break;
+        }
+    } while (choice != 0);
+}
+
+//doc du lieu tu File
+void readFile(const char* tenFile) {
+    FILE* f = fopen(tenFile, "r");
+    if (f == NULL) {
+        printf("Khong the mo file %s de doc du lieu.\n", tenFile);
+        return;
+    }
+
+    char line[256];
+    while (fgets(line, sizeof(line), f)) {
+        Product p;
+        if (sscanf(line, "%[^,],%[^,],%[^,],%[^,],%d,%f",
+                   p.ID,
+                   p.Name,
+                   p.unitOfMeasurement,
+                   p.Supplier,
+                   &p.Quantity,
+                   &p.Price) == 6) {
+
+            ProductNode* newNode = (ProductNode*)malloc(sizeof(ProductNode));
+            newNode->data = p;
+            newNode->next = NULL;
+
+            if (productList == NULL) {
+                productList = newNode;
+            } else {
+                ProductNode* temp = productList;
+                while (temp->next != NULL)
+                    temp = temp->next;
+                temp->next = newNode;
+            }
+        }
+    }
+
+    fclose(f);
+    printf("Da doc du lieu hang hoa tu file '%s'.\n", tenFile);
+}
+
+//ghi du lieu ra file
+void saveFile(const char* tenFile) {
+    FILE* f = fopen(tenFile, "w");
+    if (f == NULL) {
+        printf("Khong the mo file %s de ghi du lieu.\n", tenFile);
+        return;
+    }
+
+    ProductNode* current = productList;
+    while (current != NULL) {
+        fprintf(f, "%s,%s,%s,%s,%d,%.2f\n",
+                current->data.ID,
+                current->data.Name,
+                current->data.unitOfMeasurement,
+                current->data.Supplier,
+                current->data.Quantity,
+                current->data.Price);
+        current = current->next;
+    }
+
+    fclose(f);
+    printf("Da luu du lieu hang hoa vao file '%s'.\n", tenFile);
+}
+
+void menu(){
+    productList = NULL;
+    readFile("baocao.txt");
+>>>>>>> d05d8f7d35178d47aa93fc3a9b85efcdc4dac819
 	int number;
 	do {
         printf( "\n-------------------------------------------\n" ) ;
@@ -494,6 +878,10 @@ void menu(){
                 break;
 
             case 0:
+<<<<<<< HEAD
+=======
+                saveFile("baocao.txt");
+>>>>>>> d05d8f7d35178d47aa93fc3a9b85efcdc4dac819
                 printf("Thoat chuong trinh.\n") ;
                 //saveFile();
                 printf("Cam on ban da su dung chuong trinh!\n");
