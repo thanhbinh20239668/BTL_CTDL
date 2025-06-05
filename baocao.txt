@@ -1,0 +1,2 @@
+001,but,chiec,Hust,200,10000.00
+002,tay,chiec,Hust,100,20000.00

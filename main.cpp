@@ -739,7 +739,6 @@ void saveFile(const char* tenFile) {
 }
 
 void menu(){
-	//readFile;
     productList = NULL;
     readFile("baocao.txt");
 	int number;
@@ -840,7 +839,6 @@ void menu(){
                 break;
 
             case 0:
-                //saveFile();
                 saveFile("baocao.txt");
                 printf("Thoat chuong trinh.\n") ;
                 printf("Cam on ban da su dung chuong trinh!\n");
