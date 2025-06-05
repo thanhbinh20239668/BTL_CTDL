@@ -1,0 +1,5 @@
+DANH SACH SAN PHAM SAP XEP THEO GIA TRI TON KHO GIAM DAN:
+ID         Ten                  Don vi          Nha cung cap         So luong   Don gia    Gia tri ton kho 
+SP003      vo                   quyen           NEU                  80         15000.00   1200000.00     
+SP002      tay                  chiec           Hust                 50         20000.00   1000000.00     
+SP001      but                  chiec           Hust                 100        10000.00   1000000.00     
