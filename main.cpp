@@ -458,10 +458,10 @@ void statisticsProduct() {
         printf("[2]. Tong so luong hang\n");
         printf("[3]. Tong gia tri hang ton kho\n");
         printf("[4]. Thong ke theo nha cung cap\n");
-        printf("[5]. Sap xep theo gia tri ton kho giam dan\n");
+        printf("[5]. Thong ke theo gia tri ton kho giam dan\n");
         printf("[6]. San pham sap het hang (SL < 10)\n");
         printf("[7]. Gia tri trung binh cua 1 mat hang\n");
-        printf("[8]. Sap xep theo so luong giam dan va ghi ra file\n");
+        printf("[8]. Thong ke theo so luong giam dan\n");
         printf("[0]. Thoat\n");
         printf("Lua chon: ");
         scanf("%d", &choice);
