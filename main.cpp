@@ -40,10 +40,29 @@ void inputString(char* str, int size) {
     str[strcspn(str, "\n")] = '\0';  // Xóa newline nếu có
 }
 
+// Hàm tạo ID sản phẩm tự động dạng SP001, SP002,...
+char* createProductID(ProductNode* head) {
+    int maxID = 0;
+    while (head != NULL) {
+        int num = 0;
+        sscanf(head->data.ID, "SP%d", &num);
+        if (num > maxID) maxID = num;
+        head = head->next;
+    }
+
+    char* newID = (char*)malloc(10);
+    sprintf(newID, "SP%03d", maxID + 1);
+    return newID;
+}
+
 // Hàm tạo sản phẩm mới
 Product createProduct() {
     Product p;
-    printf("Nhap ID: "); inputString(p.ID, sizeof(p.ID));
+    char* idMoi = createProductID(productList);
+    strcpy(p.ID, idMoi);
+    free(idMoi);
+
+    printf("ID tu dong tao: %s\n", p.ID);
     printf("Nhap ten: "); inputString(p.Name, sizeof(p.Name));
     printf("Nhap don vi tinh: "); inputString(p.unitOfMeasurement, sizeof(p.unitOfMeasurement));
     printf("Nhap nha cung cap: "); inputString(p.Supplier, sizeof(p.Supplier));
@@ -61,20 +80,10 @@ void addProduct() {
     newNode->data = p;
     newNode->next = NULL;
 
-    // Kiểm tra trùng ID
-    ProductNode* temp = productList;
-    while (temp != NULL) {
-        if (strcmp(temp->data.ID, p.ID) == 0) {
-            printf("Loi: Da ton tai san pham voi ID '%s'. Khong the them.\n", p.ID);
-            return;
-        }
-        temp = temp->next;
-    }
-
-
     if (productList == NULL || strcmp(p.ID, productList->data.ID) < 0) {
         newNode->next = productList;
         productList = newNode;
+        printf("Da them san pham thanh cong!\n");
         return;
     }
 
@@ -86,6 +95,7 @@ void addProduct() {
     current->next = newNode;
     printf("Da them san pham thanh cong!\n");
 }
+
 //Hàm sửa thông tin sản phẩm
 void editProduct(){
     char id[10];
