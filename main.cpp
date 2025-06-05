@@ -746,9 +746,67 @@ void saveFile(const char* tenFile) {
     printf("Da luu du lieu hang hoa vao file '%s'.\n", tenFile);
 }
 
+//doc phieu tu file
+void readReceiptFromFile(const char* tenFile) {
+    FILE* f = fopen(tenFile, "r"); // ÐÚNG: m? d? d?c
+    if (f == NULL) {
+        printf("Khong the mo file %s de doc du lieu.\n", tenFile);
+        return;
+    }
+
+    while (!feof(f)) {
+        Receipt r;
+        if (fscanf(f, "%[^,],%[^,],%d,%[^,],%f,%[^,],%d\n",
+                   r.ID, r.type, &r.quantity, r.date,
+                   &r.price, r.name, &r.isProcessed) == 7) {
+            ReceiptNode* newNode = (ReceiptNode*)malloc(sizeof(ReceiptNode));
+            newNode->data = r;
+            newNode->next = NULL;
+
+            if (receiptList == NULL) {
+                receiptList = newNode;
+            } else {
+                ReceiptNode* temp = receiptList;
+                while (temp->next != NULL)
+                    temp = temp->next;
+                temp->next = newNode;
+            }
+        }
+    }
+
+    fclose(f);
+    printf("Da doc danh sach phieu tu file '%s'.\n", tenFile);
+}
+
+//ghi phieu ra File
+void saveReceiptToFile(const char* tenFile) {
+    FILE* f = fopen(tenFile, "w");
+    if (f == NULL) {
+        printf("Khong the mo file %s de ghi.\n", tenFile);
+        return;
+    }
+
+    ReceiptNode* current = receiptList;
+    while (current != NULL) {
+        fprintf(f, "%s,%s,%d,%s,%.2f,%s,%d\n",
+                current->data.ID,
+                current->data.type,
+                current->data.quantity,
+                current->data.date,
+                current->data.price,
+                current->data.name,
+                current->data.isProcessed);
+        current = current->next;
+    }
+
+    fclose(f);
+    printf("Da luu danh sach phieu ra file '%s'.\n", tenFile);
+}
+
 void menu(){
     productList = NULL;
     readFile("baocao.txt");
+    readReceiptFromFile("phieu.txt");
 	int number;
 	do {
         printf( "\n-------------------------------------------\n" ) ;
@@ -848,8 +906,8 @@ void menu(){
 
             case 0:
                 saveFile("baocao.txt");
+                saveReceiptToFile("phieu.txt");
                 printf("Thoat chuong trinh.\n") ;
-                //saveFile();
                 printf("Cam on ban da su dung chuong trinh!\n");
                 break;
             default:
