@@ -1,4 +1,4 @@
-SP002,tay,chiec,Hust,70,20000.00
+SP002,tay,chiec,Hust,130,20000.00
 SP003,vo,quyen,NEU,80,15000.00
 SP004,but,chiec,HUST,100,11000.00
 SP005,but xoa,chiec,NEU,100,28000.00
