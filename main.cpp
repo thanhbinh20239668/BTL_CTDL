@@ -80,21 +80,19 @@ void addProduct() {
     newNode->data = p;
     newNode->next = NULL;
 
-    if (productList == NULL || strcmp(p.ID, productList->data.ID) < 0) {
-        newNode->next = productList;
-        productList = newNode;
-        printf("Da them san pham thanh cong!\n");
-        return;
+    if (productList == NULL) {
+        productList = newNode;  // Nếu danh sách rỗng, gán luôn
+    } else {
+        ProductNode* current = productList;
+        while (current->next != NULL) {
+            current = current->next;  // Duyệt đến cuối danh sách
+        }
+        current->next = newNode;  // Thêm vào cuối
     }
 
-    ProductNode* current = productList;
-    while (current->next && strcmp(p.ID, current->next->data.ID) > 0) {
-        current = current->next;
-    }
-    newNode->next = current->next;
-    current->next = newNode;
     printf("Da them san pham thanh cong!\n");
 }
+
 
 //Hàm sửa thông tin sản phẩm
 void editProduct(){
