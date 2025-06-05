@@ -407,7 +407,7 @@ void displayReceipt() {
     }
 
     printf("\n================ CHI TIET CAC PHIEU =================\n");
-    printf("%-10s %-25s %-12s %-10s %-15s %-12s %-12s %-15s\n",
+    printf("%-10s | %-25s | %-12s | %-10s | %-15s | %-12s | %-12s | %-15s\n",
            "Ma SP", "Ten SP", "Loai phieu", "So luong", "Ngay", "Don gia", "Thanh tien", "Trang thai");
 
     ReceiptNode* current = receiptList;
@@ -417,7 +417,7 @@ void displayReceipt() {
         const char* loaiPhieu = strcmp(r.type, "IMPORT") == 0 ? "NHAP" : "XUAT";
         const char* trangThai = (r.isSuccess == 1) ? "THANH CONG" : "KHONG THANH CONG";
         
-        printf("%-10s %-25s %-12s %-10d %-15s %-12.2f %-12.2f %-15s\n",
+        printf("%-10s | %-25s | %-12s | %-10d | %-15s | %-12.2f | %-12.2f | %-15s\n",
                r.ID, r.name, loaiPhieu, r.quantity, r.date, r.price, thanhTien, trangThai);
         current = current->next;
     }
